@@ -19,6 +19,7 @@ const Navbar = () => {
       </div>
       <ul style={{ display: 'flex', listStyle: 'none', gap: '20px', margin: 0, padding: 0 }}>
         <li><Link to="/" style={{ color: 'white', textDecoration: 'none' }}>Home</Link></li>
+        <li><Link to="/products" style={{ color: 'white', textDecoration: 'none' }}>Products</Link></li>
         <li><Link to="/cart" style={{ color: 'white', textDecoration: 'none' }}>Cart</Link></li>
         <li><Link to="/orders" style={{ color: 'white', textDecoration: 'none' }}>Orders</Link></li>
         <li><Link to="/admin" style={{ color: 'white', textDecoration: 'none' }}>Admin</Link></li>

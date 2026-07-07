@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
+import Products from './pages/Products';
 import OrderDetails from './pages/OrderDetails';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
@@ -18,6 +19,7 @@ function App() {
         <main style={{ padding: '30px', maxWidth: '1200px', margin: '0 auto' }}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/products" element={<Products />} />
             <Route path="/product/:productId" element={<OrderDetails />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
