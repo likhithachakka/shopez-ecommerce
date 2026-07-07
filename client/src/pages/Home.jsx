@@ -1,56 +1,110 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-// టెస్టింగ్ కోసం కొన్ని డమ్మీ ప్రొడక్ట్స్ డేటా
-const dummyProducts = [
-  { id: '1', title: 'Trendy Sneakers', price: 1999, description: 'Comfortable and stylish sports shoes for daily wear.', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400' },
-  { id: '2', title: 'Classic Leather Watch', price: 3499, description: 'Elegant luxury watch with premium leather strap.', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400' },
-  { id: '3', title: 'Wireless Headphones', price: 2499, description: 'High bass noise-canceling bluetooth headphones.', img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400' },
-];
 
 export default function Home() {
   const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('all');
+  const [loading, setLoading] = useState(false);
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (search) params.set('search', search);
+    if (category !== 'all') params.set('category', category);
+
+    try {
+      const response = await fetch(`/api/products?${params.toString()}`);
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, [search, category]);
 
   return (
     <div>
-      <h2 style={{ textAlign: 'center', marginBottom: '30px', color: '#2f3542' }}>Comprehensive Product Catalog</h2>
-      
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '25px' }}>
-        {dummyProducts.map((product) => (
-          <div key={product.id} style={{
-            backgroundColor: 'white',
-            borderRadius: '10px',
-            overflow: 'hidden',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
-            border: '1px solid #e1e1e1',
-            display: 'flex',
-            flexDirection: 'column'
-          }}>
-            <img src={product.img} alt={product.title} style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
-            <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-              <h3 style={{ margin: '0 0 10px 0', color: '#2f3542' }}>{product.title}</h3>
-              <p style={{ color: '#747d8c', fontSize: '14px', flexGrow: 1 }}>{product.description}</p>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '15px' }}>
-                <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#ff4757' }}>₹{product.price}</span>
-                <button 
-                  onClick={() => navigate(`/order/${product.id}`)}
-                  style={{
-                    backgroundColor: '#ff4757',
-                    color: 'white',
-                    border: 'none',
-                    padding: '8px 16px',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  Shop Now
-                </button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '24px' }}>
+        <div>
+          <h2 style={{ margin: 0, color: '#2f3542' }}>ShopEZ Product Catalog</h2>
+          <p style={{ color: '#6b7280' }}>Browse products, filter by category, and explore offers.</p>
+        </div>
+
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search products"
+            style={{ padding: '10px', borderRadius: '8px', border: '1px solid #d1d5db', minWidth: '220px' }}
+          />
+          <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #d1d5db' }}>
+            <option value="all">All Categories</option>
+            <option value="Footwear">Footwear</option>
+            <option value="Accessories">Accessories</option>
+            <option value="Electronics">Electronics</option>
+          </select>
+        </div>
+      </div>
+
+      {loading ? (
+        <p>Loading products...</p>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '25px' }}>
+          {products.map((product) => (
+            <div key={product._id} style={{
+              backgroundColor: 'white',
+              borderRadius: '10px',
+              overflow: 'hidden',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
+              border: '1px solid #e5e7eb',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <img src={product.mainimg} alt={product.title} style={{ width: '100%', height: '220px', objectFit: 'cover' }} />
+              <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', marginBottom: '12px' }}>
+                  <span style={{ fontSize: '14px', color: '#6b7280' }}>{product.category}</span>
+                  <span style={{ fontSize: '14px', color: product.stock > 0 ? '#16a34a' : '#dc2626' }}>
+                    {product.stock > 0 ? 'In stock' : 'Out of stock'}
+                  </span>
+                </div>
+                <h3 style={{ margin: '0 0 12px 0', color: '#111827' }}>{product.title}</h3>
+                <p style={{ color: '#6b7280', fontSize: '14px', flexGrow: 1 }}>{product.description}</p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '18px' }}>
+                  <div>
+                    <span style={{ fontSize: '18px', fontWeight: '700', color: '#111827' }}>₹{product.price}</span>
+                    {product.discount > 0 && (
+                      <span style={{ marginLeft: '10px', color: '#ef4444', fontSize: '14px' }}>
+                        {product.discount}% off
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => navigate(`/product/${product._id}`)}
+                    style={{
+                      backgroundColor: '#3b82f6',
+                      color: 'white',
+                      border: 'none',
+                      padding: '10px 16px',
+                      borderRadius: '8px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    View details
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

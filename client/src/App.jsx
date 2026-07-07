@@ -3,6 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import OrderDetails from './pages/OrderDetails';
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import Orders from './pages/Orders';
+import Admin from './pages/Admin';
 import OrderConfirmation from './pages/OrderConfirmation';
 
 function App() {
@@ -14,7 +18,11 @@ function App() {
         <main style={{ padding: '30px', maxWidth: '1200px', margin: '0 auto' }}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/order/:productId" element={<OrderDetails />} />
+            <Route path="/product/:productId" element={<OrderDetails />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="/order-success" element={<OrderConfirmation />} />
           </Routes>
         </main>
