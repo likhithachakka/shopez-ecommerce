@@ -1,9 +1,74 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const fallbackProducts = [
+  {
+    _id: 'sample-1',
+    title: 'Trendy Sneakers',
+    description: 'Comfortable and stylish sports shoes for daily wear.',
+    price: 1999,
+    discount: 10,
+    mainimg: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800',
+    category: 'Footwear',
+    stock: 20,
+  },
+  {
+    _id: 'sample-2',
+    title: 'Classic Leather Watch',
+    description: 'Elegant luxury watch with premium leather strap.',
+    price: 3499,
+    discount: 15,
+    mainimg: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800',
+    category: 'Watches',
+    stock: 12,
+  },
+  {
+    _id: 'sample-3',
+    title: 'Wireless Headphones',
+    description: 'High bass noise-canceling bluetooth headphones.',
+    price: 2499,
+    discount: 20,
+    mainimg: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800',
+    category: 'Electronics',
+    stock: 18,
+  },
+  {
+    _id: 'sample-4',
+    title: 'Smart Fitness Watch',
+    description: 'Fitness tracker and smartwatch with heart rate monitoring.',
+    price: 2799,
+    discount: 12,
+    mainimg: 'https://images.unsplash.com/photo-1519669556870-c5ca7b6f9e5d?w=800',
+    category: 'Watches',
+    stock: 15,
+  },
+  {
+    _id: 'sample-5',
+    title: 'Leather Wallet',
+    description: 'Premium leather wallet with multiple card slots.',
+    price: 1299,
+    discount: 5,
+    mainimg: 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=800',
+    category: 'Accessories',
+    stock: 25,
+  }
+];
+
+const filterProducts = (items, search, category) => {
+  return items.filter((product) => {
+    const matchesCategory = category === 'all' || product.category.toLowerCase() === category.toLowerCase();
+    const matchesSearch = search
+      ? [product.title, product.description, product.category].some((value) =>
+          value.toLowerCase().includes(search.toLowerCase())
+        )
+      : true;
+    return matchesCategory && matchesSearch;
+  });
+};
+
 export default function Home() {
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState(fallbackProducts);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [loading, setLoading] = useState(false);
@@ -16,10 +81,18 @@ export default function Home() {
 
     try {
       const response = await fetch(`/api/products?${params.toString()}`);
+      if (!response.ok) {
+        throw new Error('Server responded with error');
+      }
       const data = await response.json();
-      setProducts(data);
-    } catch (error) {
-      console.error(error);
+      if (data.length) {
+        setProducts(data);
+      } else {
+        setProducts(filterProducts(fallbackProducts, search, category));
+      }
+    } catch (fetchError) {
+      console.error(fetchError);
+      setProducts(filterProducts(fallbackProducts, search, category));
     } finally {
       setLoading(false);
     }
@@ -41,7 +114,7 @@ export default function Home() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search products"
+            placeholder="Search products, e.g. watches"
             style={{ padding: '10px', borderRadius: '8px', border: '1px solid #d1d5db', minWidth: '220px' }}
           />
           <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #d1d5db' }}>
@@ -52,6 +125,10 @@ export default function Home() {
           </select>
         </div>
       </div>
+
+      {error && (
+        <p style={{ color: '#dc2626', marginBottom: '18px' }}>{error}</p>
+      )}
 
       {loading ? (
         <p>Loading products...</p>
