@@ -3,51 +3,75 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
   const navigate = useNavigate();
+  const highlights = [
+    { value: '500+', label: 'Curated products' },
+    { value: '24/7', label: 'Order support' },
+    { value: '4.9/5', label: 'Happy shoppers' },
+  ];
+
+  const categories = ['Footwear', 'Accessories', 'Electronics', 'Watches'];
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '24px', alignItems: 'start' }}>
-      <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: '36px', boxShadow: '0 18px 45px rgba(15, 23, 42, 0.08)', border: '1px solid #e5e7eb' }}>
-        <span style={{ display: 'inline-block', marginBottom: '18px', color: '#2563eb', fontWeight: 700 }}>ShopEZ</span>
-        <h1 style={{ margin: '0 0 18px 0', fontSize: '3rem', lineHeight: 1.05, color: '#111827' }}>Shop smarter, faster, and with confidence.</h1>
-        <p style={{ margin: 0, color: '#475569', fontSize: '1.05rem', lineHeight: 1.8 }}>
-          Explore the ShopEZ catalog, filter products by category, and complete checkout easily.
-          Use the Products page to search for items like watches, headphones, footwear, and accessories.
-        </p>
-        <div style={{ marginTop: '32px', display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-          <button
-            onClick={() => navigate('/products')}
-            style={{ backgroundColor: '#2563eb', color: 'white', border: 'none', borderRadius: '12px', padding: '14px 24px', cursor: 'pointer' }}
-          >
-            Browse Products
-          </button>
-          <button
-            onClick={() => navigate('/cart')}
-            style={{ backgroundColor: '#f8fafc', color: '#1f2937', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '14px 24px', cursor: 'pointer' }}
-          >
-            View Cart
-          </button>
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
-        <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: '28px', boxShadow: '0 18px 45px rgba(15, 23, 42, 0.08)', border: '1px solid #e5e7eb' }}>
-          <h2 style={{ margin: '0 0 14px 0', color: '#111827' }}>Top categories</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-            <span style={{ backgroundColor: '#eef2ff', color: '#4338ca', borderRadius: '999px', padding: '10px 14px', textAlign: 'center' }}>Footwear</span>
-            <span style={{ backgroundColor: '#fef3c7', color: '#92400e', borderRadius: '999px', padding: '10px 14px', textAlign: 'center' }}>Accessories</span>
-            <span style={{ backgroundColor: '#d1fae5', color: '#047857', borderRadius: '999px', padding: '10px 14px', textAlign: 'center' }}>Electronics</span>
-            <span style={{ backgroundColor: '#ede9fe', color: '#5b21b6', borderRadius: '999px', padding: '10px 14px', textAlign: 'center' }}>Watches</span>
+    <div className="home-page">
+      <section className="hero-section">
+        <div className="hero-copy">
+          <span className="eyebrow">Curated shopping made effortless</span>
+          <h1>Discover products that feel as good as they look.</h1>
+          <p>
+            Browse the ShopEZ catalog, explore polished categories, and move from discovery to checkout without friction.
+          </p>
+          <div className="hero-actions">
+            <button className="primary-btn" onClick={() => navigate('/products')}>
+              Browse Products
+            </button>
+            <button className="secondary-btn" onClick={() => navigate('/cart')}>
+              View Cart
+            </button>
+          </div>
+          <div className="hero-stats">
+            {highlights.map((item) => (
+              <div key={item.label} className="stat-card">
+                <strong>{item.value}</strong>
+                <span>{item.label}</span>
+              </div>
+            ))}
           </div>
         </div>
-        <div style={{ backgroundColor: 'white', borderRadius: '18px', padding: '28px', boxShadow: '0 18px 45px rgba(15, 23, 42, 0.08)', border: '1px solid #e5e7eb' }}>
-          <h2 style={{ margin: '0 0 14px 0', color: '#111827' }}>Why ShopEZ?</h2>
-          <ul style={{ margin: 0, paddingLeft: '20px', color: '#475569', lineHeight: 1.85 }}>
-            <li>Easy product browsing with category filters and search</li>
-            <li>Cart and checkout flow for fast purchases</li>
-            <li>Order history and admin capabilities built in</li>
-          </ul>
+
+        <div className="hero-visual">
+          <div className="visual-card">
+            <span className="visual-badge">New arrival</span>
+            <h3>Premium essentials for everyday life</h3>
+            <p>From smart accessories to everyday footwear, everything is gathered in one place.</p>
+            <div className="pill-row">
+              {categories.map((category) => (
+                <span key={category} className="pill">
+                  {category}
+                </span>
+              ))}
+            </div>
+            <div className="mini-cards">
+              <div>Fast checkout</div>
+              <div>Secure orders</div>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+
+      <section className="feature-grid">
+        <article className="feature-card">
+          <h3>Smart browsing</h3>
+          <p>Find the right item quickly with category filters and a simple product experience.</p>
+        </article>
+        <article className="feature-card">
+          <h3>Seamless checkout</h3>
+          <p>Enjoy a guided cart and checkout experience designed to keep purchases moving.</p>
+        </article>
+        <article className="feature-card">
+          <h3>Order tracking</h3>
+          <p>Stay on top of every order from confirmation through delivery and beyond.</p>
+        </article>
+      </section>
     </div>
   );
 }

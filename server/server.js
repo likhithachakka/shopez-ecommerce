@@ -11,16 +11,23 @@ const envPath = path.resolve(__dirname, 'er.env');
 dotenv.config({ path: envPath });
 
 // డేటాబేస్ కనెక్ట్ చేయడం
+let dbConnected = false;
+
 connectDB()
-    .then(async () => {
-        try {
-            const count = await Product.countDocuments();
-            if (count === 0) {
-                await Product.insertMany(seedProducts);
-                console.log('Seeded default products to MongoDB.');
+    .then(async (connected) => {
+        dbConnected = Boolean(connected);
+        if (dbConnected) {
+            try {
+                const count = await Product.countDocuments();
+                if (count === 0) {
+                    await Product.insertMany(seedProducts);
+                    console.log('Seeded default products to MongoDB.');
+                }
+            } catch (seedError) {
+                console.error('Product seed error:', seedError);
             }
-        } catch (seedError) {
-            console.error('Product seed error:', seedError);
+        } else {
+            console.log('Database not connected; skipping seed and using fallback data.');
         }
     })
     .catch((err) => {

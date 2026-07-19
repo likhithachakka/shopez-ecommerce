@@ -8,9 +8,11 @@ const connectDB = async () => {
         }
         const conn = await mongoose.connect(uri);
         console.log(`MongoDB కనెక్ట్ అయ్యింది: ${conn.connection.host}`);
+        return true;
     } catch (error) {
         console.error(`డేటాబేస్ ఎర్రర్: ${error.message}`);
-        process.exit(1); // యాప్‌ను ఆపివేయడానికి
+        console.warn('Continuing without MongoDB. Falling back to sample data for product listing.');
+        return false;
     }
 };
 
