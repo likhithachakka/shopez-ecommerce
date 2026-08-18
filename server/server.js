@@ -37,6 +37,8 @@ connectDB()
 const productRoutes = require('../routes/productRoutes');
 const orderRoutes = require('../routes/orderRoutes');
 const cartRoutes = require('../routes/cartRoutes');
+const authRoutes = require('../routes/authRoutes');
+const couponRoutes = require('../routes/couponRoutes');
 
 const app = express();
 
@@ -44,9 +46,11 @@ const app = express();
 app.use(cors());
 app.use(express.json()); // JSON డేటాను రీడ్ చేయడానికి
 
+app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/coupons', couponRoutes);
 
 // బేసిక్ రూట్ చెకింగ్ కోసం
 app.get('/', (req, res) => {

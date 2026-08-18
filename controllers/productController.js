@@ -6,9 +6,13 @@ const matchFilter = (product, filter) => {
         return false;
     }
 
+    if (filter.region && filter.region !== 'all' && product.region !== filter.region) {
+        return false;
+    }
+
     if (filter.search) {
         const searchReg = new RegExp(filter.search, 'i');
-        if (!searchReg.test(product.title) && !searchReg.test(product.description) && !searchReg.test(product.category)) {
+        if (!searchReg.test(product.title) && !searchReg.test(product.description) && !searchReg.test(product.category) && !searchReg.test(product.region)) {
             return false;
         }
     }
@@ -17,8 +21,8 @@ const matchFilter = (product, filter) => {
 };
 
 const getProducts = async (req, res) => {
-    const { search, category, minPrice, maxPrice, discount } = req.query;
-    const filter = { search, category, minPrice, maxPrice, discount };
+    const { search, category, region, minPrice, maxPrice, discount } = req.query;
+    const filter = { search, category, region, minPrice, maxPrice, discount };
 
     try {
         const query = {};
@@ -26,12 +30,17 @@ const getProducts = async (req, res) => {
             query.$or = [
                 { title: new RegExp(search, 'i') },
                 { description: new RegExp(search, 'i') },
-                { category: new RegExp(search, 'i') }
+                { category: new RegExp(search, 'i') },
+                { region: new RegExp(search, 'i') }
             ];
         }
 
         if (category && category !== 'all') {
             query.category = category;
+        }
+
+        if (region && region !== 'all') {
+            query.region = region;
         }
 
         if (minPrice || maxPrice) {

@@ -6,7 +6,12 @@ const orderSchema = new mongoose.Schema({
     email: { type: String, required: true },
     mobile: { type: String, required: true },
     address: { type: String, required: true },
+    city: { type: String, required: true },
+    state: { type: String, required: true },
     pincode: { type: String, required: true },
+    shippingFee: { type: Number, default: 0 },
+    gst: { type: Number, default: 0 },
+    total: { type: Number, default: 0 },
     items: [
         {
             productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },

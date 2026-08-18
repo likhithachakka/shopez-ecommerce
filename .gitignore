@@ -5,3 +5,4 @@ package-lock.json
 *.env
 server/er.env
 client/node_modules
+.vscode/

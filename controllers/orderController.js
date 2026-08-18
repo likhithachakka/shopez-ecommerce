@@ -1,6 +1,13 @@
 const Order = require('../server/models/Order');
 const Cart = require('../server/models/Cart');
 
+const calculateShippingFee = (state, subtotal) => {
+    if (!state) return 79;
+    const metroStates = ['Maharashtra', 'Delhi', 'Karnataka', 'Tamil Nadu', 'Telangana', 'Gujarat'];
+    const fixedFee = metroStates.includes(state) ? 59 : 99;
+    return subtotal > 5000 ? 0 : fixedFee;
+};
+
 const createOrder = async (req, res) => {
     try {
         const {
@@ -9,6 +16,8 @@ const createOrder = async (req, res) => {
             email,
             mobile,
             address,
+            city,
+            state,
             pincode,
             paymentMethod,
             items,
@@ -18,15 +27,29 @@ const createOrder = async (req, res) => {
             return res.status(400).json({ message: 'Order requires at least one item.' });
         }
 
+        if (!city || !state || !pincode) {
+            return res.status(400).json({ message: 'City, state, and pincode are required for shipping.' });
+        }
+
+        const subtotal = items.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity || 1), 0);
+        const shippingFee = calculateShippingFee(state, subtotal);
+        const gst = Number((subtotal * 0.05).toFixed(2));
+        const total = Number((subtotal + shippingFee + gst).toFixed(2));
+
         const orderPayload = {
             userId: userId || 'guest',
             name,
             email,
             mobile,
             address,
+            city,
+            state,
             pincode,
             items,
             paymentMethod,
+            shippingFee,
+            gst,
+            total,
         };
 
         const newOrder = await Order.create(orderPayload);

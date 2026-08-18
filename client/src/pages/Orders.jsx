@@ -32,14 +32,14 @@ export default function Orders() {
         <div style={{ display: 'grid', gap: '18px' }}>
           {orders.map((order) => (
             <div key={order._id} style={{ background: 'white', padding: '20px', borderRadius: '16px', boxShadow: '0 8px 20px rgba(0,0,0,0.05)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', gap: '12px', flexWrap: 'wrap' }}>
                 <div>
                   <h3 style={{ margin: 0 }}>{order.name}</h3>
                   <p style={{ margin: '4px 0 0 0', color: '#6b7280' }}>{order.email}</p>
                 </div>
                 <span style={{ color: '#2563eb', fontWeight: '700' }}>{new Date(order.createdAt).toLocaleDateString()}</span>
               </div>
-              <p style={{ margin: '0 0 12px 0', color: '#4b5563' }}>{order.address}, {order.pincode}</p>
+              <p style={{ margin: '0 0 12px 0', color: '#4b5563' }}>{order.address}, {order.city}, {order.state} - {order.pincode}</p>
               <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '14px' }}>
                 {order.items?.map((item) => (
                   <div key={item.productId} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
@@ -48,9 +48,11 @@ export default function Orders() {
                   </div>
                 ))}
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '14px', fontWeight: '700' }}>
-                <span>Payment</span>
-                <span>{order.paymentMethod}</span>
+              <div style={{ display: 'grid', gap: '8px', marginTop: '14px', fontWeight: '600' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Shipping</span><span>₹{order.shippingFee || 0}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>GST</span><span>₹{order.gst || 0}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Total</span><span>₹{order.total || 0}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Payment</span><span>{order.paymentMethod}</span></div>
               </div>
             </div>
           ))}

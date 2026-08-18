@@ -1,29 +1,46 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Navbar = () => {
+const Navbar = ({ cartCount = 0, onCartClick }) => {
   return (
-    <nav style={{
-      display: 'flex',
-      justifyContent: 'between',
-      alignItems: 'center',
-      padding: '15px 30px',
-      backgroundColor: '#1a1a1a',
-      color: 'white',
-      boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
-    }}>
-      <div className="logo">
-        <Link to="/" style={{ color: 'white', textDecoration: 'none', fontSize: '24px', fontWeight: 'bold' }}>
-          ShopEZ 🛍️
+    <nav className="amazon-nav">
+      <div className="nav-top">
+        <Link to="/" className="brand-mark">
+          <span className="brand-logo">ShopEZ</span>
         </Link>
+
+        <div className="nav-location">
+          <span>Deliver to</span>
+          <strong>India</strong>
+        </div>
+
+        <div className="nav-search">
+          <select className="search-select">
+            <option>All</option>
+            <option>Electronics</option>
+            <option>Fashion</option>
+            <option>Home</option>
+          </select>
+          <input type="text" placeholder="Search products, brands and more" />
+          <button type="button">Search</button>
+        </div>
+
+        <div className="nav-actions">
+          <Link to="/login">Sign in</Link>
+          <Link to="/orders">Returns</Link>
+          <button type="button" className="cart-link" onClick={onCartClick}>Cart ({cartCount})</button>
+        </div>
       </div>
-      <ul style={{ display: 'flex', listStyle: 'none', gap: '20px', margin: 0, padding: 0 }}>
-        <li><Link to="/" style={{ color: 'white', textDecoration: 'none' }}>Home</Link></li>
-        <li><Link to="/products" style={{ color: 'white', textDecoration: 'none' }}>Products</Link></li>
-        <li><Link to="/cart" style={{ color: 'white', textDecoration: 'none' }}>Cart</Link></li>
-        <li><Link to="/orders" style={{ color: 'white', textDecoration: 'none' }}>Orders</Link></li>
-        <li><Link to="/admin" style={{ color: 'white', textDecoration: 'none' }}>Admin</Link></li>
-      </ul>
+
+      <div className="nav-bottom">
+        <Link to="/products">All Products</Link>
+        <Link to="/products">Best Sellers</Link>
+        <Link to="/products">Mobiles</Link>
+        <Link to="/products">Fashion</Link>
+        <Link to="/products">Electronics</Link>
+        <Link to="/products">Home</Link>
+        <Link to="/admin">Admin</Link>
+      </div>
     </nav>
   );
 };
