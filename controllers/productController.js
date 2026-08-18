@@ -53,10 +53,24 @@ const getProducts = async (req, res) => {
             query.discount = { $gte: Number(discount) };
         }
 
-        const products = await Product.find(query).sort({ createdAt: -1 });
+        let products = await Product.find(query).sort({ createdAt: -1 });
+        // Ensure every product returned has a main image; fall back to a local placeholder
+        products = products.map((p) => {
+            const obj = typeof p.toObject === 'function' ? p.toObject() : p;
+            if (!obj.mainimg) obj.mainimg = '/default-product.svg';
+            if (!obj.carousel || !obj.carousel.length) obj.carousel = [obj.mainimg];
+            return obj;
+        });
+
         if (!products.length) {
             const fallback = sampleProducts.filter((product) => matchFilter(product, filter));
-            return res.status(200).json(fallback.length ? fallback : sampleProducts);
+            // also make sure fallback items have image data
+            const ensured = (fallback.length ? fallback : sampleProducts).map((it) => ({
+                ...it,
+                mainimg: it.mainimg || '/default-product.svg',
+                carousel: it.carousel && it.carousel.length ? it.carousel : [it.mainimg || '/default-product.svg'],
+            }));
+            return res.status(200).json(ensured);
         }
         res.status(200).json(products);
     } catch (error) {
@@ -71,7 +85,11 @@ const getProductById = async (req, res) => {
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
-        res.status(200).json(product);
+        // ensure image fallback for single product
+        const obj = typeof product.toObject === 'function' ? product.toObject() : product;
+        if (!obj.mainimg) obj.mainimg = '/default-product.svg';
+        if (!obj.carousel || !obj.carousel.length) obj.carousel = [obj.mainimg];
+        res.status(200).json(obj);
     } catch (error) {
         res.status(500).json({ message: 'సర్వర్ లో ఎర్రర్ ఉంది', error });
     }
